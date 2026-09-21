@@ -1,7 +1,7 @@
+<?php
+
 /* TO RUN: localhost/Labs/LabActivity5-Dimatulac-BasicPHP*/
 
-
-<?php
 
 /*
     START SESSION
