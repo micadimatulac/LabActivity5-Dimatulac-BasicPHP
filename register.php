@@ -3,8 +3,8 @@
 /*
     START SESSION
 
-    session_start() allows this page to access
-    the session data of the current user.
+    This allows the page to check if
+    the user is currently logged in.
 */
 session_start();
 
@@ -12,14 +12,11 @@ session_start();
 /*
     UNPROTECTED ROUTE
 
-    The register page should only be accessible
+    register.php should only be accessed
     when the user is logged out.
 
-    If $_SESSION['user'] already contains a user,
-    it means the user is already authenticated.
-
-    header() redirects the user to index.php.
-    exit stops the rest of this file from running.
+    If the user is already logged in,
+    redirect them to index.php.
 */
 if (!empty($_SESSION['user'])) {
     header('Location: index.php');
@@ -51,13 +48,8 @@ if (!empty($_SESSION['user'])) {
             <!--
                 REGISTER FORM
 
-                The form asks the user for:
-                1. Email
-                2. Password
-                3. Retype Password
-
-                JavaScript will handle the validation
-                before saving the account.
+                The user needs to enter an email,
+                password, and retype the password.
             -->
             <form id="registerForm">
 
@@ -103,8 +95,8 @@ if (!empty($_SESSION['user'])) {
                 <!--
                     ERROR MESSAGE
 
-                    JavaScript will change the text inside
-                    this paragraph if registration fails.
+                    Registration errors will be
+                    displayed inside this paragraph.
                 -->
                 <p id="errorMessage"></p>
 
@@ -117,7 +109,7 @@ if (!empty($_SESSION['user'])) {
             </form>
 
 
-            <!-- LINK TO LOGIN -->
+            <!-- LOGIN LINK -->
             <p>
                 Already have an account?
                 <a href="login.php">Login</a>
@@ -133,11 +125,8 @@ if (!empty($_SESSION['user'])) {
         /*
             GET HTML ELEMENTS
 
-            querySelector() finds an HTML element
-            using its id.
-
-            These variables allow JavaScript to access
-            and control the form and its input fields.
+            querySelector() is used to select the
+            form, inputs, and error message.
         */
         const registerForm = document.querySelector("#registerForm");
         const emailInput = document.querySelector("#email");
@@ -149,33 +138,27 @@ if (!empty($_SESSION['user'])) {
         /*
             REGISTER FORM EVENT
 
-            addEventListener() waits for the register
-            form to be submitted.
-
-            The function inside it will run every time
-            the user clicks the Register button.
+            This function runs when the user
+            submits the registration form.
         */
         registerForm.addEventListener("submit", (event) => {
 
             /*
-                PREVENT DEFAULT SUBMISSION
+                STOP DEFAULT FORM SUBMISSION
 
-                preventDefault() prevents the form from
-                immediately refreshing/submitting.
-
-                This gives JavaScript time to validate
-                the user's input first.
+                This allows JavaScript to validate
+                the inputs before continuing.
             */
             event.preventDefault();
 
 
             /*
-                GET INPUT VALUES
+                GET USER INPUT
 
-                .value gets the value entered by the user.
+                Get the values entered by the user.
 
-                trim() removes unnecessary spaces before
-                and after the email.
+                trim() removes unnecessary spaces
+                before and after the email.
             */
             const email = emailInput.value.trim();
             const password = passwordInput.value;
@@ -183,13 +166,51 @@ if (!empty($_SESSION['user'])) {
 
 
             /*
+                GET EXISTING REGISTERED EMAIL
+
+                Check localStorage to see if an email
+                has already been registered.
+            */
+            const registeredEmail =
+                localStorage.getItem("registeredEmail");
+
+
+            /*
+                CHECK FOR DUPLICATE EMAIL
+
+                If a registered email already exists
+                and it is the same as the entered email,
+                do not allow another registration.
+
+                toLowerCase() makes the comparison
+                case-insensitive.
+
+                Example:
+                mica@gmail.com
+                MICA@gmail.com
+
+                These will be treated as the same email.
+            */
+            if (
+                registeredEmail &&
+                email.toLowerCase() === registeredEmail.toLowerCase()
+            ) {
+
+                errorMessage.textContent =
+                    "This email is already registered.";
+
+                return;
+            }
+
+
+            /*
                 PASSWORD VALIDATION
 
-                Check whether the password and retyped
+                Check if the password and retyped
                 password are the same.
 
-                If they are different, display an error
-                and stop the function using return.
+                If they do not match, registration
+                will not continue.
             */
             if (password !== retypePassword) {
 
@@ -201,16 +222,13 @@ if (!empty($_SESSION['user'])) {
 
 
             /*
-                SAVE ACCOUNT
+                SAVE REGISTERED ACCOUNT
 
-                localStorage.setItem() stores information
-                inside the user's browser.
+                Save the user's email and password
+                inside localStorage.
 
-                The registered email will later be used
-                for validation on login.php.
-
-                The password is also stored for this
-                simplified laboratory activity.
+                These values will later be retrieved
+                by login.php for validation.
             */
             localStorage.setItem("registeredEmail", email);
             localStorage.setItem("registeredPassword", password);
