@@ -1,4 +1,4 @@
-// TO RUN: localhost/Labs/LabActivity5-Dimatulac-BasicPHP
+/* TO RUN: localhost/Labs/LabActivity5-Dimatulac-BasicPHP*/
 
 
 <?php
