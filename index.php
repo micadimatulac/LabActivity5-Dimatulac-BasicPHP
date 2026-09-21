@@ -1,3 +1,6 @@
+// TO RUN: localhost/Labs/LabActivity5-Dimatulac-BasicPHP
+
+
 <?php
 declare(strict_types=1);
 
